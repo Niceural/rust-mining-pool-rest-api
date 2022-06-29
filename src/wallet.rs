@@ -1,5 +1,20 @@
 use {
-    serde::{Deserialize, Serialize},
+    diesel::{
+        ExpressionMethods, 
+        Insertable, 
+        Queryable, 
+        RunQueryDsl
+    },
+    diesel::query_dsl::methods::FilterDsl,
+    diesel::result::Error,
+    serde::{
+        Deserialize, 
+        Serialize
+    },
+    uuid::Uuid,
+    super::schema::wallets,
+    crate::DBPooledConnection,
+    crate::miner::{Miner, MinerDAO},
 };
 
 // ================================ JSON Payload (REST)
@@ -20,6 +35,8 @@ pub struct NewWalletRequest {
 }
 
 // ================================ DAO Object (DB Table Records)
+#[derive(Queryable, Insertable)]
+#[table_name = "wallets"]
 pub struct WalletDAO {
     pub address: String,
     pub club_name: String,
